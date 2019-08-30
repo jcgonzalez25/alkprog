@@ -1,5 +1,6 @@
 import React, { Component } from "react";
-import BigCalendar from "react-big-calendar";
+//import BigCalendar from "react-big-calendar";
+import Calendar from "react-big-calendar";
 import moment from "moment";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
@@ -24,7 +25,7 @@ import { Switch, Link, Route } from "react-router-dom";
 import Container from "@material-ui/core/Container";
 import axios from "axios";
 
-const localizer = BigCalendar.momentLocalizer(moment);
+const localizer = Calendar.momentLocalizer(moment);
 const propTypes = {};
 moment().toDate();
 
@@ -374,7 +375,7 @@ class ReactCalendarBase extends Component {
     return (
       <div>
         <Container style={{ height: 1000 }} maxWidth="lg">
-          <BigCalendar
+          <Calendar
             className={classes.root}
             selectable
             startAccessor={cal_events => new Date(cal_events.start)}
