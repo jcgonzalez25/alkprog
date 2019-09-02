@@ -1,6 +1,6 @@
 const {user,password,database}  = require('./config.js');
 const { exec } = require('child_process');
-const QUERY_PATH = 'dummyDataQueries.sql';
+const QUERY_PATH = './queries/dummyDataQueries.sql';
 
 // create a file with .sql extenstion, set QUERY_PATH to the path of your SQL file
 // and the query will run. 
