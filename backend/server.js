@@ -7,6 +7,12 @@ const bodyParser = require("body-parser");
 // cors is not best to be used on production; will need to do something different on prod
 const cors = require("cors");
 
+const {
+  user,
+  password,
+  database
+} = require("./testing/config.js");
+
 app.use(cors());
 
 app.use(bodyParser.json());
@@ -16,12 +22,12 @@ app.use(
     extended: true
   })
 );
-
+//change config info
 const con = mysql.createConnection({
   host: "localhost",
-  user: "root",
-  password: "Artm@y08",
-  database: "dev2qa"
+  user,
+  password,
+  database
 });
 
 // console.log that your server is up and running
