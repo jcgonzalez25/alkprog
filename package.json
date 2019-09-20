@@ -30,6 +30,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
+    "serve": "node ./backend/server.js",
     "run_query":"node ./backend/testing/run_query.js"
   },
   "eslintConfig": {
