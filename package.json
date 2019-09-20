@@ -29,7 +29,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "run_query":"node ./backend/testing/run_query.js"
   },
   "eslintConfig": {
     "extends": "react-app"
