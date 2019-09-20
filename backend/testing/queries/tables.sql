@@ -1,7 +1,5 @@
 USE jello;
-
-
-DROP TABLE testevent IF EXISTS;
+DROP TABLE IF EXISTS testevent;
 CREATE TABLE testevent(
     title VARCHAR(255),
     bill_type VARCHAR(255),
@@ -9,8 +7,7 @@ CREATE TABLE testevent(
     client VARCHAR(255),
     therapist VARCHAR(255),
     location VARCHAR(255),
-    newLocation VARCHAR(255),
-    newCategory VARCHAR(255),
-    selectedDate DATE,
-    endSelectedDate DATE
+    category VARCHAR(255),
+    start DATE,
+    end DATE
 );
