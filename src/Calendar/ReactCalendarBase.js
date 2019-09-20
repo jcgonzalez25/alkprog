@@ -25,6 +25,10 @@ import { Switch, Link, Route } from "react-router-dom";
 import Container from "@material-ui/core/Container";
 import axios from "axios";
 
+import {
+  getRequest
+} from "./dataHandler.js";
+
 const localizer = Calendar.momentLocalizer(moment);
 const propTypes = {};
 moment().toDate();
@@ -188,43 +192,69 @@ class ReactCalendarBase extends Component {
 
   convertDate = date => {
     return moment.utc(date).toDate();
-  };
-
+  }
   componentDidMount() {
-    axios
-      .get("http://localhost:5000/events")
-      .then(response => {
-        console.log("Got event data!");
-        console.log(response.data);
-        let appointments = response.data;
+    let getEvents,getTherapists,getClients;
+    getEvents     = getRequest("events");
+    getTherapists = getRequest("therapists");
+    getClients    = getRequest("clients");
+
+    getEvents.then(data=>{
+      if(data.Error){console.error(`${data.Message} On events Request`)
+      }else{
         this.setState({
-          cal_events: appointments
+          cal_events:data
         });
-      })
-      .then(response2 => {
-        return axios
-          .get("http://localhost:5000/gettherapists")
-          .then(response2 => {
-            console.log("Got therapist data!");
-            console.log(response2.data);
-            this.setState({
-              therapistData: response2.data
-            });
-          });
-      })
-      .then(response3 => {
-        return axios.get("http://localhost:5000/getclients").then(response3 => {
-          console.log("Got client data!");
-          console.log(response3.data);
-          let clientTest = response3.data;
-          this.setState({
-            clientData: clientTest
-          });
-        });
-      })
-      .catch(function(error) {
-        console.log(error);
-      });
+      }
+    })
+    //setstate on therapists and clients 
+    getTherapists.then(data=>{
+      if(data.Error){console.error(`${data.Message} On therapist Request`)
+      }else{
+        console.log("should set therapist state here")
+      }
+    });
+    getClients.then(data=>{
+      if(data.Error)console.error(`${data.Message} On Client Request`)
+      else{
+        console.log("Should set client state now")
+      }
+    });
+
+
+
+    
+      // axios
+      // .get("http://localhost:5000/gettherapists")
+      // .then(response2 => {
+      //   // changed therapist data to empty to prevent error. will 
+      //   // go change it back 
+      //   return axios
+      //     .get("http://localhost:5000/gettherapists")
+      //     .then(response2 => {
+      //       console.log("Got therapist data!");
+      //       console.log(response2.data);
+      //       let debug = [];
+      //       this.setState({
+      //         therapistData: debug
+      //       });
+      //     });
+      // })
+      // .then(response3 => {
+      //   //changed clientTest variable to prevent error
+      //   return axios.get("http://localhost:5000/getclients").then(response3 => {
+      //     console.log("Got client data!");
+      //     console.log(response3.data);
+      //     let clientTest = response3.data;
+      //     clientTest = [];
+      //     this.setState({
+      //       clientData: clientTest
+      //     });
+      //   });
+      // })
+      // .catch(function(error) {
+      //   console.log(error);
+      // });
 
     if (!this.state.intervalIsSet) {
       let interval = setInterval(this.getDataFromDb, 1000);
@@ -259,13 +289,12 @@ class ReactCalendarBase extends Component {
     };
     axios
       .post("http://localhost:5000/putData2", obj)
-      .then(res => console.log(res.data));
+      .then(res => console.log("here"));
     /* this will clear everything after saving+closing */
 
     this.setState({
       newBillType: "",
       newClientType: "",
-
       newClient: "",
       newTherapist: "",
       newLocation: "",
@@ -371,19 +400,17 @@ class ReactCalendarBase extends Component {
       selectedDate,
       endSelectedDate
     } = this.state;
-
     return (
       <div>
         <Container style={{ height: 1000 }} maxWidth="lg">
           <Calendar
             className={classes.root}
             selectable
-            startAccessor={cal_events => new Date(cal_events.start)}
-            endAccessor={cal_events => new Date(cal_events.end)}
+            startAccessor="start"
+            endAccessor="end"
             localizer={localizer}
             events={cal_events}
             views={["month", "week", "day"]}
-            defaultDate={new Date()}
             defaultView="month"
             onSelectSlot={this.handleClickOpen}
             // (this sets the start time of 8am)
@@ -775,6 +802,17 @@ class ReactCalendarBase extends Component {
 
               <Button
                 onClick={() => {
+                  const NewEvent = {
+                    bill_type:this.state.newBillType,
+                    client_type:this.state.newClientType,
+                    client:this.state.newClient,
+                    therapist:this.state.thereapist,
+                    location:this.state.newLocation,
+                    category:this.state.newCategory,
+                    start:this.state.selectedDate,
+                    end:this.state.endSelectedDate
+                    /* the rest of the values (the reucrring ones) will eventually be submitted*/
+                  }
                   this.onSubmit(
                     this.state.newBillType,
                     this.state.newClientType,
@@ -786,11 +824,30 @@ class ReactCalendarBase extends Component {
                     this.state.endSelectedDate
                     /* the rest of the values (the reucrring ones) will eventually be submitted */
                   );
+                  
+                  this.setState(state=>{
+                    let cal_events = [
+                      ...state.cal_events,
+                      NewEvent
+                    ];
+                    return {
+                      ...state,
+                      cal_events
+                    }
+                  })
                 }}
+                
                 color="primary"
               >
                 Save
               </Button>
+
+
+
+
+
+
+
 
               <Button onClick={this.handleClose} color="primary">
                 Close
